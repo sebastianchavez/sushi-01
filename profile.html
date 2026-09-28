@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mi Perfil - SushiHouse</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="assets/css/custom.css">
+</head>
+<body>
+  <header id="main-header"></header>
+
+  <section class="py-12 px-4 max-w-7xl mx-auto">
+    <h1 class="text-4xl font-bold text-white mb-8">Mi Perfil</h1>
+    <div class="grid lg:grid-cols-4 gap-8">
+      <aside class="lg:col-span-1">
+        <div class="bg-gray-800 rounded-xl p-6 text-center">
+          <img id="user-avatar" src="" alt="Avatar" class="w-24 h-24 rounded-full mx-auto mb-4 object-cover border-4 border-red-600">
+          <h2 id="user-name" class="text-xl font-bold text-white mb-1"></h2>
+          <p id="user-email" class="text-gray-400 text-sm mb-4"></p>
+          <p id="user-member" class="text-gray-500 text-xs"></p>
+          <nav class="mt-6 space-y-2 text-left">
+            <a href="profile.html" class="flex items-center gap-3 bg-red-600 text-white px-4 py-3 rounded-lg font-semibold">
+              <i class="fas fa-history"></i> Mis Pedidos
+            </a>
+            <a href="#" class="flex items-center gap-3 text-gray-300 hover:bg-gray-700 px-4 py-3 rounded-lg transition">
+              <i class="fas fa-user-edit"></i> Editar Perfil
+            </a>
+            <a href="#" class="flex items-center gap-3 text-gray-300 hover:bg-gray-700 px-4 py-3 rounded-lg transition">
+              <i class="fas fa-map-marker-alt"></i> Direcciones
+            </a>
+            <a href="login.html" class="flex items-center gap-3 text-gray-300 hover:bg-gray-700 px-4 py-3 rounded-lg transition">
+              <i class="fas fa-sign-out-alt"></i> Cerrar Sesión
+            </a>
+          </nav>
+        </div>
+      </aside>
+
+      <div class="lg:col-span-3">
+        <h2 class="text-2xl font-bold text-white mb-6">Historial de Pedidos</h2>
+        <div id="orders-list" class="space-y-4"></div>
+      </div>
+    </div>
+  </section>
+
+  <footer id="main-footer"></footer>
+
+  <script src="assets/js/data.js"></script>
+  <script src="assets/js/cart.js"></script>
+  <script src="assets/js/main.js"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      document.getElementById("user-avatar").src = user.avatar;
+      document.getElementById("user-name").textContent = user.name;
+      document.getElementById("user-email").textContent = user.email;
+      document.getElementById("user-member").textContent = `Miembro desde ${new Date(user.memberSince).toLocaleDateString("es-MX", { year: "numeric", month: "long" })}`;
+
+      document.getElementById("orders-list").innerHTML = orders.map(order => `
+        <div class="bg-gray-800 rounded-xl p-6 card-hover">
+          <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-4">
+            <div>
+              <h3 class="text-white font-bold text-lg">${order.id}</h3>
+              <p class="text-gray-400 text-sm">${new Date(order.date).toLocaleDateString("es-MX", { year: "numeric", month: "long", day: "numeric" })}</p>
+            </div>
+            <div class="flex items-center gap-4">
+              ${getStatusBadge(order.status)}
+              <span class="text-red-400 font-bold text-xl">$${order.total.toFixed(2)}</span>
+            </div>
+          </div>
+          <div class="flex flex-wrap gap-2 mb-4">
+            ${order.items.map(item => `
+              <span class="bg-gray-700 text-gray-300 px-3 py-1 rounded-full text-sm">
+                ${item.name} x${item.quantity}
+              </span>
+            `).join("")}
+          </div>
+          <div class="flex gap-3">
+            <a href="order-detail.html?id=${order.id}" class="bg-gray-700 hover:bg-gray-600 text-white px-4 py-2 rounded-lg transition text-sm font-semibold">
+              <i class="fas fa-eye mr-1"></i> Ver detalle
+            </a>
+            <a href="review.html?orderId=${order.id}" class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg transition text-sm font-semibold">
+              <i class="fas fa-star mr-1"></i> Dejar reseña
+            </a>
+          </div>
+        </div>
+      `).join("");
+    });
+  </script>
+</body>
+</html>

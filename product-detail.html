@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Detalle del Producto - SushiHouse</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="assets/css/custom.css">
+</head>
+<body>
+  <header id="main-header"></header>
+
+  <section class="py-12 px-4 max-w-7xl mx-auto">
+    <a href="products.html" class="text-gray-400 hover:text-red-400 transition mb-6 inline-block">
+      <i class="fas fa-arrow-left mr-2"></i>Volver al catálogo
+    </a>
+    <div id="product-detail" class="grid md:grid-cols-2 gap-12"></div>
+  </section>
+
+  <section class="py-16 px-4 max-w-7xl mx-auto">
+    <h2 class="text-3xl font-bold text-white mb-8">Reseñas de clientes</h2>
+    <div id="product-reviews" class="space-y-6"></div>
+  </section>
+
+  <section class="py-16 px-4 max-w-7xl mx-auto">
+    <h2 class="text-3xl font-bold text-white mb-8">Productos relacionados</h2>
+    <div id="related-products" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6"></div>
+  </section>
+
+  <footer id="main-footer"></footer>
+
+  <script src="assets/js/data.js"></script>
+  <script src="assets/js/cart.js"></script>
+  <script src="assets/js/main.js"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const productId = parseInt(getUrlParam("id"));
+      const product = products.find(p => p.id === productId);
+
+      if (!product) {
+        document.getElementById("product-detail").innerHTML = '<p class="text-gray-400 text-xl">Producto no encontrado</p>';
+        return;
+      }
+
+      document.title = `${product.name} - SushiHouse`;
+
+      document.getElementById("product-detail").innerHTML = `
+        <div>
+          <img src="${product.image}" alt="${product.name}" class="w-full rounded-xl shadow-2xl">
+        </div>
+        <div>
+          <span class="text-red-400 font-semibold text-sm uppercase">${product.category}</span>
+          <h1 class="text-4xl font-bold text-white mt-2 mb-4">${product.name}</h1>
+          <div class="flex items-center gap-2 mb-4">
+            ${renderStars(Math.round(product.rating))}
+            <span class="text-gray-400">(${product.reviews} reseñas)</span>
+          </div>
+          <p class="text-3xl text-red-400 font-bold mb-6">$${product.price.toFixed(2)}</p>
+          <p class="text-gray-300 leading-relaxed mb-6">${product.description}</p>
+          
+          <div class="mb-6">
+            <h3 class="text-white font-bold mb-2">Ingredientes</h3>
+            <div class="flex flex-wrap gap-2">
+              ${product.ingredients.map(i => `<span class="bg-gray-800 text-gray-300 px-3 py-1 rounded-full text-sm">${i}</span>`).join("")}
+            </div>
+          </div>
+
+          <div class="flex items-center gap-4 mb-6">
+            <label class="text-white font-semibold">Cantidad:</label>
+            <div class="flex items-center gap-2">
+              <button id="qty-minus" class="bg-gray-700 hover:bg-gray-600 text-white w-10 h-10 rounded-full flex items-center justify-center transition">
+                <i class="fas fa-minus"></i>
+              </button>
+              <input id="qty-input" type="number" value="1" min="1" class="w-16 text-center bg-gray-800 text-white border border-gray-700 rounded-lg py-2 font-semibold">
+              <button id="qty-plus" class="bg-gray-700 hover:bg-gray-600 text-white w-10 h-10 rounded-full flex items-center justify-center transition">
+                <i class="fas fa-plus"></i>
+              </button>
+            </div>
+          </div>
+
+          <button id="add-to-cart-btn" class="w-full bg-red-600 hover:bg-red-700 text-white py-4 rounded-lg font-bold text-lg transition">
+            <i class="fas fa-shopping-cart mr-2"></i>Agregar al carrito
+          </button>
+        </div>
+      `;
+
+      const qtyInput = document.getElementById("qty-input");
+      document.getElementById("qty-minus").addEventListener("click", () => {
+        const val = parseInt(qtyInput.value);
+        if (val > 1) qtyInput.value = val - 1;
+      });
+      document.getElementById("qty-plus").addEventListener("click", () => {
+        qtyInput.value = parseInt(qtyInput.value) + 1;
+      });
+      document.getElementById("add-to-cart-btn").addEventListener("click", () => {
+        cart.addItem(product.id, parseInt(qtyInput.value));
+      });
+
+      const productReviews = reviews.filter(r => r.productId === productId);
+      const reviewsContainer = document.getElementById("product-reviews");
+      if (productReviews.length === 0) {
+        reviewsContainer.innerHTML = '<p class="text-gray-400">Aún no hay reseñas para este producto.</p>';
+      } else {
+        reviewsContainer.innerHTML = productReviews.map(r => `
+          <div class="bg-gray-800 rounded-xl p-6">
+            <div class="flex items-center justify-between mb-3">
+              <div class="flex items-center gap-3">
+                <div class="w-10 h-10 bg-red-600 rounded-full flex items-center justify-center text-white font-bold">
+                  ${r.user.charAt(0)}
+                </div>
+                <div>
+                  <p class="text-white font-semibold">${r.user}</p>
+                  <p class="text-gray-500 text-sm">${r.date}</p>
+                </div>
+              </div>
+              ${renderStars(r.rating)}
+            </div>
+            <p class="text-gray-300">${r.comment}</p>
+          </div>
+        `).join("");
+      }
+
+      const relatedProducts = products.filter(p => p.category === product.category && p.id !== product.id).slice(0, 4);
+      document.getElementById("related-products").innerHTML = relatedProducts.map(p => renderProductCard(p)).join("");
+    });
+  </script>
+</body>
+</html>

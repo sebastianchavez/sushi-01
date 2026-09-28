@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Productos - SushiHouse</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="assets/css/custom.css">
+</head>
+<body>
+  <header id="main-header"></header>
+
+  <section class="relative py-16 overflow-hidden">
+    <div class="absolute inset-0">
+      <img src="https://images.unsplash.com/photo-1579871494447-9811cf80d66c?w=1920&h=400&fit=crop" alt="Sushi" class="w-full h-full object-cover">
+      <div class="absolute inset-0 bg-black/80"></div>
+    </div>
+    <div class="relative z-10 max-w-7xl mx-auto px-4 text-center">
+      <h1 class="text-5xl font-bold text-white mb-4">Nuestro Menú</h1>
+      <p class="text-xl text-gray-300">Descubre nuestra selección de platos japoneses</p>
+    </div>
+  </section>
+
+  <section class="py-12 px-4 max-w-7xl mx-auto">
+    <div class="flex flex-col md:flex-row gap-8">
+      <aside class="md:w-64 shrink-0">
+        <div class="bg-gray-800 rounded-xl p-6 sticky top-20">
+          <h3 class="text-white font-bold text-lg mb-4">Categorías</h3>
+          <div id="category-filters" class="space-y-2"></div>
+          
+          <h3 class="text-white font-bold text-lg mb-4 mt-6">Precio</h3>
+          <div class="space-y-2">
+            <label class="flex items-center gap-2 text-gray-300 cursor-pointer hover:text-white transition">
+              <input type="checkbox" class="price-filter rounded" value="0-5">
+              <span>$0 - $5</span>
+            </label>
+            <label class="flex items-center gap-2 text-gray-300 cursor-pointer hover:text-white transition">
+              <input type="checkbox" class="price-filter rounded" value="5-10">
+              <span>$5 - $10</span>
+            </label>
+            <label class="flex items-center gap-2 text-gray-300 cursor-pointer hover:text-white transition">
+              <input type="checkbox" class="price-filter rounded" value="10-15">
+              <span>$10 - $15</span>
+            </label>
+            <label class="flex items-center gap-2 text-gray-300 cursor-pointer hover:text-white transition">
+              <input type="checkbox" class="price-filter rounded" value="15+">
+              <span>$15+</span>
+            </label>
+          </div>
+
+          <button id="clear-filters" class="w-full mt-6 bg-gray-700 hover:bg-gray-600 text-white py-2 rounded-lg transition">
+            Limpiar filtros
+          </button>
+        </div>
+      </aside>
+
+      <div class="flex-1">
+        <div class="flex justify-between items-center mb-6">
+          <p id="results-count" class="text-gray-400"></p>
+          <select id="sort-select" class="bg-gray-800 text-white border border-gray-700 rounded-lg px-4 py-2">
+            <option value="name">Ordenar por nombre</option>
+            <option value="price-low">Precio: menor a mayor</option>
+            <option value="price-high">Precio: mayor a menor</option>
+            <option value="rating">Mejor calificación</option>
+          </select>
+        </div>
+        <div id="products-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
+      </div>
+    </div>
+  </section>
+
+  <footer id="main-footer"></footer>
+
+  <script src="assets/js/data.js"></script>
+  <script src="assets/js/cart.js"></script>
+  <script src="assets/js/main.js"></script>
+  <script>
+    let currentCategory = "all";
+    let currentPriceFilters = [];
+    let currentSort = "name";
+
+    function filterAndRender() {
+      let filtered = [...products];
+
+      if (currentCategory !== "all") {
+        filtered = filtered.filter(p => p.category === currentCategory);
+      }
+
+      if (currentPriceFilters.length > 0) {
+        filtered = filtered.filter(p => {
+          return currentPriceFilters.some(range => {
+            if (range === "0-5") return p.price >= 0 && p.price <= 5;
+            if (range === "5-10") return p.price > 5 && p.price <= 10;
+            if (range === "10-15") return p.price > 10 && p.price <= 15;
+            if (range === "15+") return p.price > 15;
+          });
+        });
+      }
+
+      if (currentSort === "name") filtered.sort((a, b) => a.name.localeCompare(b.name));
+      if (currentSort === "price-low") filtered.sort((a, b) => a.price - b.price);
+      if (currentSort === "price-high") filtered.sort((a, b) => b.price - a.price);
+      if (currentSort === "rating") filtered.sort((a, b) => b.rating - a.rating);
+
+      document.getElementById("results-count").textContent = `${filtered.length} producto${filtered.length !== 1 ? 's' : ''} encontrado${filtered.length !== 1 ? 's' : ''}`;
+      document.getElementById("products-grid").innerHTML = filtered.map(p => renderProductCard(p)).join("");
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+      const urlCategory = getUrlParam("category");
+      if (urlCategory) currentCategory = urlCategory;
+
+      const filtersContainer = document.getElementById("category-filters");
+      filtersContainer.innerHTML = `
+        <button class="category-btn w-full text-left px-3 py-2 rounded-lg transition ${currentCategory === 'all' ? 'bg-red-600 text-white' : 'text-gray-300 hover:bg-gray-700'}" data-category="all">
+          Todas
+        </button>
+        ${categories.map(cat => `
+          <button class="category-btn w-full text-left px-3 py-2 rounded-lg transition ${currentCategory === cat.name ? 'bg-red-600 text-white' : 'text-gray-300 hover:bg-gray-700'}" data-category="${cat.name}">
+            ${cat.icon} ${cat.name}
+          </button>
+        `).join("")}
+      `;
+
+      document.querySelectorAll(".category-btn").forEach(btn => {
+        btn.addEventListener("click", () => {
+          currentCategory = btn.dataset.category;
+          document.querySelectorAll(".category-btn").forEach(b => {
+            b.classList.remove("bg-red-600", "text-white");
+            b.classList.add("text-gray-300");
+          });
+          btn.classList.add("bg-red-600", "text-white");
+          btn.classList.remove("text-gray-300");
+          filterAndRender();
+        });
+      });
+
+      document.querySelectorAll(".price-filter").forEach(cb => {
+        cb.addEventListener("change", () => {
+          currentPriceFilters = Array.from(document.querySelectorAll(".price-filter:checked")).map(c => c.value);
+          filterAndRender();
+        });
+      });
+
+      document.getElementById("sort-select").addEventListener("change", (e) => {
+        currentSort = e.target.value;
+        filterAndRender();
+      });
+
+      document.getElementById("clear-filters").addEventListener("click", () => {
+        currentCategory = "all";
+        currentPriceFilters = [];
+        document.querySelectorAll(".price-filter").forEach(cb => cb.checked = false);
+        document.querySelectorAll(".category-btn").forEach(b => {
+          b.classList.remove("bg-red-600", "text-white");
+          b.classList.add("text-gray-300");
+        });
+        document.querySelector('.category-btn[data-category="all"]').classList.add("bg-red-600", "text-white");
+        document.querySelector('.category-btn[data-category="all"]').classList.remove("text-gray-300");
+        filterAndRender();
+      });
+
+      filterAndRender();
+    });
+  </script>
+</body>
+</html>

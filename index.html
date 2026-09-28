@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SushiHouse - Auténtica Cocina Japonesa</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="assets/css/custom.css">
+</head>
+<body>
+  <header id="main-header"></header>
+
+  <section class="relative h-screen flex items-center justify-center overflow-hidden">
+    <div class="absolute inset-0">
+      <img src="https://images.unsplash.com/photo-1579584425555-c3ce17fd4351?w=1920&h=1080&fit=crop" alt="Sushi" class="w-full h-full object-cover">
+      <div class="absolute inset-0 hero-gradient"></div>
+    </div>
+    <div class="relative z-10 text-center px-4 animate-slide-up">
+      <h1 class="text-5xl md:text-7xl font-bold text-white mb-4">
+        Sushi<span class="text-red-500">House</span>
+      </h1>
+      <p class="text-xl md:text-2xl text-gray-300 mb-8 max-w-2xl mx-auto">
+        Auténtica cocina japonesa con ingredientes frescos y de la mejor calidad
+      </p>
+      <div class="flex gap-4 justify-center">
+        <a href="products.html" class="bg-red-600 hover:bg-red-700 text-white px-8 py-3 rounded-lg font-semibold transition text-lg">
+          Ver Menú
+        </a>
+        <a href="about.html" class="bg-transparent border-2 border-white hover:bg-white hover:text-black text-white px-8 py-3 rounded-lg font-semibold transition text-lg">
+          Conócenos
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <section class="py-16 px-4 max-w-7xl mx-auto">
+    <div class="text-center mb-12">
+      <h2 class="text-4xl font-bold text-white mb-4">Nuestras Categorías</h2>
+      <p class="text-gray-400">Explora nuestra variedad de platos japoneses</p>
+    </div>
+    <div id="categories-grid" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4"></div>
+  </section>
+
+  <section class="py-16 px-4 max-w-7xl mx-auto">
+    <div class="text-center mb-12">
+      <h2 class="text-4xl font-bold text-white mb-4">Productos Destacados</h2>
+      <p class="text-gray-400">Los favoritos de nuestros clientes</p>
+    </div>
+    <div id="featured-products" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6"></div>
+  </section>
+
+  <section class="py-16 px-4 max-w-7xl mx-auto">
+    <div class="text-center mb-12">
+      <h2 class="text-4xl font-bold text-white mb-4">Más Populares</h2>
+      <p class="text-gray-400">Los más pedidos por nuestros clientes</p>
+    </div>
+    <div id="popular-products" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6"></div>
+  </section>
+
+  <section class="py-16 px-4 bg-gradient-to-r from-red-900/20 to-black">
+    <div class="max-w-4xl mx-auto text-center">
+      <h2 class="text-4xl font-bold text-white mb-4">¿Listo para ordenar?</h2>
+      <p class="text-gray-300 mb-8 text-lg">Disfruta del mejor sushi con entrega a domicilio</p>
+      <a href="products.html" class="inline-block bg-red-600 hover:bg-red-700 text-white px-12 py-4 rounded-lg font-semibold transition text-lg">
+        Ordenar Ahora
+      </a>
+    </div>
+  </section>
+
+  <footer id="main-footer"></footer>
+
+  <script src="assets/js/data.js"></script>
+  <script src="assets/js/cart.js"></script>
+  <script src="assets/js/main.js"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const categoriesGrid = document.getElementById("categories-grid");
+      categoriesGrid.innerHTML = categories.map(cat => `
+        <a href="products.html?category=${cat.name}" class="bg-gray-800 hover:bg-gray-700 rounded-xl p-6 text-center transition card-hover group">
+          <div class="text-5xl mb-3">${cat.icon}</div>
+          <h3 class="text-white font-bold group-hover:text-red-400 transition">${cat.name}</h3>
+          <p class="text-gray-400 text-sm mt-1">${cat.description}</p>
+        </a>
+      `).join("");
+
+      const featuredGrid = document.getElementById("featured-products");
+      const featuredProducts = products.filter(p => p.featured).slice(0, 8);
+      featuredGrid.innerHTML = featuredProducts.map(p => renderProductCard(p)).join("");
+
+      const popularGrid = document.getElementById("popular-products");
+      const popularProducts = products.filter(p => p.popular).slice(0, 4);
+      popularGrid.innerHTML = popularProducts.map(p => renderProductCard(p)).join("");
+    });
+  </script>
+</body>
+</html>

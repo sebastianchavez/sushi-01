@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dejar Reseña - SushiHouse</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="assets/css/custom.css">
+</head>
+<body>
+  <header id="main-header"></header>
+
+  <section class="py-12 px-4 max-w-3xl mx-auto">
+    <a href="profile.html" class="text-gray-400 hover:text-red-400 transition mb-6 inline-block">
+      <i class="fas fa-arrow-left mr-2"></i>Volver a mis pedidos
+    </a>
+
+    <div class="bg-gray-800 rounded-xl p-8">
+      <h1 class="text-3xl font-bold text-white mb-2">Dejar una reseña</h1>
+      <p class="text-gray-400 mb-8">Comparte tu experiencia con nosotros</p>
+
+      <form id="review-form">
+        <div class="mb-6">
+          <label class="block text-white font-semibold mb-3">¿Qué producto quieres reseñar?</label>
+          <select id="product-select" class="w-full bg-gray-700 border border-gray-600 text-white rounded-lg px-4 py-3 focus:border-red-500 focus:outline-none transition">
+            <option value="">Selecciona un producto</option>
+          </select>
+        </div>
+
+        <div class="mb-6">
+          <label class="block text-white font-semibold mb-3">Tu calificación</label>
+          <div id="star-rating" class="flex gap-2">
+            <button type="button" class="star-btn text-4xl text-gray-600 hover:text-yellow-400 transition" data-rating="1">
+              <i class="fas fa-star"></i>
+            </button>
+            <button type="button" class="star-btn text-4xl text-gray-600 hover:text-yellow-400 transition" data-rating="2">
+              <i class="fas fa-star"></i>
+            </button>
+            <button type="button" class="star-btn text-4xl text-gray-600 hover:text-yellow-400 transition" data-rating="3">
+              <i class="fas fa-star"></i>
+            </button>
+            <button type="button" class="star-btn text-4xl text-gray-600 hover:text-yellow-400 transition" data-rating="4">
+              <i class="fas fa-star"></i>
+            </button>
+            <button type="button" class="star-btn text-4xl text-gray-600 hover:text-yellow-400 transition" data-rating="5">
+              <i class="fas fa-star"></i>
+            </button>
+          </div>
+          <p id="rating-text" class="text-gray-400 mt-2">Selecciona una calificación</p>
+        </div>
+
+        <div class="mb-6">
+          <label class="block text-white font-semibold mb-3">Tu reseña</label>
+          <textarea id="review-comment" rows="5" required placeholder="Cuéntanos tu experiencia con el producto..." class="w-full bg-gray-700 border border-gray-600 text-white rounded-lg px-4 py-3 focus:border-red-500 focus:outline-none transition"></textarea>
+        </div>
+
+        <div class="mb-8">
+          <label class="flex items-center gap-3 cursor-pointer">
+            <input type="checkbox" required class="w-5 h-5 rounded bg-gray-700 border-gray-600 text-red-500 focus:ring-red-500">
+            <span class="text-gray-300 text-sm">Acepto que mi reseña sea publicada en el sitio web</span>
+          </label>
+        </div>
+
+        <button type="submit" class="w-full bg-red-600 hover:bg-red-700 text-white py-4 rounded-lg font-bold text-lg transition">
+          <i class="fas fa-paper-plane mr-2"></i>Enviar reseña
+        </button>
+      </form>
+    </div>
+  </section>
+
+  <footer id="main-footer"></footer>
+
+  <script src="assets/js/data.js"></script>
+  <script src="assets/js/cart.js"></script>
+  <script src="assets/js/main.js"></script>
+  <script>
+    let selectedRating = 0;
+    const ratingTexts = ["", "Muy malo", "Malo", "Regular", "Bueno", "Excelente"];
+
+    document.addEventListener("DOMContentLoaded", () => {
+      const orderId = getUrlParam("orderId");
+      const order = orders.find(o => o.id === orderId);
+      const productSelect = document.getElementById("product-select");
+
+      if (order) {
+        order.items.forEach(item => {
+          const option = document.createElement("option");
+          option.value = item.productId;
+          option.textContent = item.name;
+          productSelect.appendChild(option);
+        });
+      }
+
+      document.querySelectorAll(".star-btn").forEach(btn => {
+        btn.addEventListener("click", () => {
+          selectedRating = parseInt(btn.dataset.rating);
+          document.querySelectorAll(".star-btn").forEach((b, i) => {
+            if (i < selectedRating) {
+              b.classList.remove("text-gray-600");
+              b.classList.add("text-yellow-400");
+            } else {
+              b.classList.remove("text-yellow-400");
+              b.classList.add("text-gray-600");
+            }
+          });
+          document.getElementById("rating-text").textContent = ratingTexts[selectedRating];
+        });
+      });
+
+      document.getElementById("review-form").addEventListener("submit", (e) => {
+        e.preventDefault();
+        if (selectedRating === 0) {
+          alert("Por favor selecciona una calificación");
+          return;
+        }
+        if (!productSelect.value) {
+          alert("Por favor selecciona un producto");
+          return;
+        }
+
+        const notification = document.createElement("div");
+        notification.className = "fixed top-4 right-4 bg-green-600 text-white px-6 py-3 rounded-lg shadow-lg z-50 animate-fade-in";
+        notification.innerHTML = '<i class="fas fa-check-circle mr-2"></i>¡Reseña enviada exitosamente!';
+        document.body.appendChild(notification);
+
+        setTimeout(() => {
+          window.location.href = "profile.html";
+        }, 2000);
+      });
+    });
+  </script>
+</body>
+</html>
