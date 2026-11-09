@@ -7,6 +7,7 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
   <link rel="stylesheet" href="assets/css/custom.css">
+<meta name="currency" content="CLP">
 </head>
 <body>
   <header id="main-header"></header>
@@ -25,23 +26,23 @@
               </div>
               <div>
                 <label class="block text-gray-300 mb-2">Teléfono</label>
-                <input type="tel" required value="+52 55 1234 5678" class="w-full bg-gray-700 border border-gray-600 text-white rounded-lg px-4 py-3 focus:border-red-500 focus:outline-none transition">
+                <input type="tel" required value="+56 2 2345 6789" class="w-full bg-gray-700 border border-gray-600 text-white rounded-lg px-4 py-3 focus:border-red-500 focus:outline-none transition">
               </div>
               <div class="md:col-span-2">
                 <label class="block text-gray-300 mb-2">Dirección</label>
-                <input type="text" required value="Av. Reforma 123" class="w-full bg-gray-700 border border-gray-600 text-white rounded-lg px-4 py-3 focus:border-red-500 focus:outline-none transition">
+                <input type="text" required value="Av. Providencia 123" class="w-full bg-gray-700 border border-gray-600 text-white rounded-lg px-4 py-3 focus:border-red-500 focus:outline-none transition">
               </div>
               <div>
                 <label class="block text-gray-300 mb-2">Colonia</label>
-                <input type="text" required value="Col. Centro" class="w-full bg-gray-700 border border-gray-600 text-white rounded-lg px-4 py-3 focus:border-red-500 focus:outline-none transition">
+                <input type="text" required value="Providencia" class="w-full bg-gray-700 border border-gray-600 text-white rounded-lg px-4 py-3 focus:border-red-500 focus:outline-none transition">
               </div>
               <div>
                 <label class="block text-gray-300 mb-2">Código Postal</label>
-                <input type="text" required value="06000" class="w-full bg-gray-700 border border-gray-600 text-white rounded-lg px-4 py-3 focus:border-red-500 focus:outline-none transition">
+                <input type="text" required value="7500000" class="w-full bg-gray-700 border border-gray-600 text-white rounded-lg px-4 py-3 focus:border-red-500 focus:outline-none transition">
               </div>
               <div>
                 <label class="block text-gray-300 mb-2">Ciudad</label>
-                <input type="text" required value="Ciudad de México" class="w-full bg-gray-700 border border-gray-600 text-white rounded-lg px-4 py-3 focus:border-red-500 focus:outline-none transition">
+                <input type="text" required value="Santiago" class="w-full bg-gray-700 border border-gray-600 text-white rounded-lg px-4 py-3 focus:border-red-500 focus:outline-none transition">
               </div>
               <div>
                 <label class="block text-gray-300 mb-2">Referencias</label>
@@ -59,7 +60,7 @@
                   <p class="text-white font-semibold">Envío Estándar</p>
                   <p class="text-gray-400 text-sm">3-5 días hábiles</p>
                 </div>
-                <span class="text-white font-bold">$5.00</span>
+                <span class="text-white font-bold">$5.000</span>
               </label>
               <label class="flex items-center gap-4 bg-gray-700 p-4 rounded-lg cursor-pointer hover:bg-gray-600 transition shipping-option">
                 <input type="radio" name="shipping" value="express" checked class="text-red-500">
@@ -67,7 +68,7 @@
                   <p class="text-white font-semibold">Envío Express</p>
                   <p class="text-gray-400 text-sm">1-2 días hábiles</p>
                 </div>
-                <span class="text-white font-bold">$10.00</span>
+                <span class="text-white font-bold">$10.000</span>
               </label>
               <label class="flex items-center gap-4 bg-gray-700 p-4 rounded-lg cursor-pointer hover:bg-gray-600 transition shipping-option">
                 <input type="radio" name="shipping" value="pickup" class="text-red-500">
@@ -130,15 +131,15 @@
             <div class="border-t border-gray-700 pt-4 space-y-2">
               <div class="flex justify-between text-gray-300">
                 <span>Subtotal</span>
-                <span id="checkout-subtotal">$0.00</span>
+                <span id="checkout-subtotal">$0</span>
               </div>
               <div class="flex justify-between text-gray-300">
                 <span>Envío</span>
-                <span id="checkout-shipping">$10.00</span>
+                <span id="checkout-shipping">$10.000</span>
               </div>
               <div class="flex justify-between text-white text-xl font-bold pt-2 border-t border-gray-700">
                 <span>Total</span>
-                <span id="checkout-total">$0.00</span>
+                <span id="checkout-total">$0</span>
               </div>
             </div>
             <button type="submit" class="w-full bg-red-600 hover:bg-red-700 text-white py-4 rounded-lg font-bold text-lg transition mt-6">
@@ -165,17 +166,17 @@
             <p class="text-white text-sm font-semibold">${item.name}</p>
             <p class="text-gray-400 text-sm">x${item.quantity}</p>
           </div>
-          <span class="text-white font-semibold">$${(item.price * item.quantity).toFixed(2)}</span>
+          <span class="text-white font-semibold">$${(item.price * item.quantity).toLocaleString('es-CL', { maximumFractionDigits: 0 })}</span>
         </div>
       `).join("");
 
       const subtotal = cart.getTotal();
       const shippingRadio = document.querySelector('input[name="shipping"]:checked');
-      const shippingCost = shippingRadio.value === "standard" ? 5 : shippingRadio.value === "express" ? 10 : 0;
+      const shippingCost = shippingRadio.value === "standard" ? 5000 : shippingRadio.value === "express" ? 10000 : 0;
 
-      document.getElementById("checkout-subtotal").textContent = `$${subtotal.toFixed(2)}`;
-      document.getElementById("checkout-shipping").textContent = shippingCost === 0 ? "Gratis" : `$${shippingCost.toFixed(2)}`;
-      document.getElementById("checkout-total").textContent = `$${(subtotal + shippingCost).toFixed(2)}`;
+      document.getElementById("checkout-subtotal").textContent = `$${subtotal.toLocaleString('es-CL', { maximumFractionDigits: 0 })}`;
+      document.getElementById("checkout-shipping").textContent = shippingCost === 0 ? "Gratis" : `$${shippingCost.toLocaleString('es-CL', { maximumFractionDigits: 0 })}`;
+      document.getElementById("checkout-total").textContent = `$${(subtotal + shippingCost).toLocaleString('es-CL', { maximumFractionDigits: 0 })}`;
     }
 
     document.addEventListener("DOMContentLoaded", () => {

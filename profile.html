@@ -7,6 +7,7 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
   <link rel="stylesheet" href="assets/css/custom.css">
+<meta name="currency" content="CLP">
 </head>
 <body>
   <header id="main-header"></header>
@@ -54,18 +55,18 @@
       document.getElementById("user-avatar").src = user.avatar;
       document.getElementById("user-name").textContent = user.name;
       document.getElementById("user-email").textContent = user.email;
-      document.getElementById("user-member").textContent = `Miembro desde ${new Date(user.memberSince).toLocaleDateString("es-MX", { year: "numeric", month: "long" })}`;
+      document.getElementById("user-member").textContent = `Miembro desde ${new Date(user.memberSince).toLocaleDateString("es-CL", { year: "numeric", month: "long" })}`;
 
       document.getElementById("orders-list").innerHTML = orders.map(order => `
         <div class="bg-gray-800 rounded-xl p-6 card-hover">
           <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-4">
             <div>
               <h3 class="text-white font-bold text-lg">${order.id}</h3>
-              <p class="text-gray-400 text-sm">${new Date(order.date).toLocaleDateString("es-MX", { year: "numeric", month: "long", day: "numeric" })}</p>
+              <p class="text-gray-400 text-sm">${new Date(order.date).toLocaleDateString("es-CL", { year: "numeric", month: "long", day: "numeric" })}</p>
             </div>
             <div class="flex items-center gap-4">
               ${getStatusBadge(order.status)}
-              <span class="text-red-400 font-bold text-xl">$${order.total.toFixed(2)}</span>
+              <span class="text-red-400 font-bold text-xl">$${order.total.toLocaleString('es-CL', { maximumFractionDigits: 0 })}</span>
             </div>
           </div>
           <div class="flex flex-wrap gap-2 mb-4">

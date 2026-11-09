@@ -103,7 +103,7 @@ class ShoppingCart {
         <img src="${item.image}" alt="${item.name}" class="w-24 h-24 object-cover rounded-lg">
         <div class="flex-1">
           <h3 class="text-white font-bold text-lg">${item.name}</h3>
-          <p class="text-red-400 font-semibold">$${item.price.toFixed(2)}</p>
+          <p class="text-red-400 font-semibold">$${item.price.toLocaleString('es-CL', { maximumFractionDigits: 0 })}</p>
         </div>
         <div class="flex items-center gap-2">
           <button onclick="cart.updateQuantity(${item.id}, ${item.quantity - 1})" class="bg-gray-700 hover:bg-gray-600 text-white w-8 h-8 rounded-full flex items-center justify-center transition">
@@ -115,7 +115,7 @@ class ShoppingCart {
           </button>
         </div>
         <div class="text-right">
-          <p class="text-white font-bold text-lg">$${(item.price * item.quantity).toFixed(2)}</p>
+          <p class="text-white font-bold text-lg">$${(item.price * item.quantity).toLocaleString('es-CL', { maximumFractionDigits: 0 })}</p>
           <button onclick="cart.removeItem(${item.id})" class="text-red-400 hover:text-red-300 transition mt-2">
             <i class="fas fa-trash"></i> Eliminar
           </button>
@@ -124,7 +124,7 @@ class ShoppingCart {
     `).join("");
 
     const subtotal = this.getTotal();
-    const shipping = 5.00;
+    const shipping = 5000;
     const total = subtotal + shipping;
 
     cartSummary.innerHTML = `
@@ -133,16 +133,16 @@ class ShoppingCart {
         <div class="space-y-2 mb-4">
           <div class="flex justify-between text-gray-300">
             <span>Subtotal</span>
-            <span>$${subtotal.toFixed(2)}</span>
+            <span>$${subtotal.toLocaleString('es-CL', { maximumFractionDigits: 0 })}</span>
           </div>
           <div class="flex justify-between text-gray-300">
             <span>Envío</span>
-            <span>$${shipping.toFixed(2)}</span>
+            <span>$${shipping.toLocaleString('es-CL', { maximumFractionDigits: 0 })}</span>
           </div>
           <div class="border-t border-gray-700 pt-2 mt-2">
             <div class="flex justify-between text-white text-xl font-bold">
               <span>Total</span>
-              <span>$${total.toFixed(2)}</span>
+              <span>$${total.toLocaleString('es-CL', { maximumFractionDigits: 0 })}</span>
             </div>
           </div>
         </div>

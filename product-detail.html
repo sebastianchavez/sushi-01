@@ -7,6 +7,7 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
   <link rel="stylesheet" href="assets/css/custom.css">
+<meta name="currency" content="CLP">
 </head>
 <body>
   <header id="main-header"></header>
@@ -56,7 +57,7 @@
             ${renderStars(Math.round(product.rating))}
             <span class="text-gray-400">(${product.reviews} reseñas)</span>
           </div>
-          <p class="text-3xl text-red-400 font-bold mb-6">$${product.price.toFixed(2)}</p>
+          <p class="text-3xl text-red-400 font-bold mb-6">$${product.price.toLocaleString('es-CL', { maximumFractionDigits: 0 })}</p>
           <p class="text-gray-300 leading-relaxed mb-6">${product.description}</p>
           
           <div class="mb-6">

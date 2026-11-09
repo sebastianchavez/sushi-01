@@ -92,9 +92,9 @@ function initFooter() {
           <div>
             <h4 class="text-white font-bold mb-4">Contacto</h4>
             <ul class="space-y-2 text-sm text-gray-400">
-              <li><i class="fas fa-map-marker-alt mr-2 text-red-500"></i>Av. Reforma 123, CDMX</li>
-              <li><i class="fas fa-phone mr-2 text-red-500"></i>+52 55 1234 5678</li>
-              <li><i class="fas fa-envelope mr-2 text-red-500"></i>info@sushihouse.com</li>
+              <li><i class="fas fa-map-marker-alt mr-2 text-red-500"></i>Av. Providencia 123, Región Metropolitana</li>
+              <li><i class="fas fa-phone mr-2 text-red-500"></i>+56 2 2345 6789</li>
+              <li><i class="fas fa-envelope mr-2 text-red-500"></i>info@sushihouse.cl</li>
               <li><i class="fas fa-clock mr-2 text-red-500"></i>Lun-Dom: 12:00 - 22:00</li>
             </ul>
           </div>
@@ -139,7 +139,7 @@ function renderProductCard(product) {
         </a>
         <p class="text-gray-400 text-sm mb-3 line-clamp-2">${product.description}</p>
         <div class="flex items-center justify-between">
-          <span class="text-red-400 font-bold text-xl">$${product.price.toFixed(2)}</span>
+          <span class="text-red-400 font-bold text-xl">$${product.price.toLocaleString('es-CL', { maximumFractionDigits: 0 })}</span>
           <button onclick="cart.addItem(${product.id})" class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg transition text-sm font-semibold">
             <i class="fas fa-plus mr-1"></i> Agregar
           </button>
